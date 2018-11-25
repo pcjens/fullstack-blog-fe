@@ -12,7 +12,10 @@ class App extends React.Component {
       username: '',
       password: '',
       user: null,
-      error: null
+      error: null,
+      blogTitle: '',
+      blogAuthor: '',
+      blogUrl: ''
     }
   }
 
@@ -23,6 +26,7 @@ class App extends React.Component {
     const localStorageUser = window.localStorage.getItem('user')
     if (localStorageUser !== null) {
       const user = JSON.parse(localStorageUser)
+      blogService.setToken(user.token)
       this.setState({ user })
     }
   }
@@ -34,6 +38,7 @@ class App extends React.Component {
         username: this.state.username,
         password: this.state.password
       })
+      blogService.setToken(user.token)
       this.setState({ username: '', password: '', user, error: null })
       window.localStorage.setItem('user', JSON.stringify(user))
     } catch (exception) {
@@ -44,13 +49,31 @@ class App extends React.Component {
     }
   }
 
-  logout = async (event) => {
+  logout = (event) => {
     event.preventDefault()
     window.localStorage.clear()
     this.setState({ user: null })
   }
 
-  handleLoginFieldChange = (event) => {
+  createBlog = async (event) => {
+    event.preventDefault()
+    try {
+      const newBlog = await blogService.post({
+        title: this.state.blogTitle,
+        author: this.state.blogAuthor,
+        url: this.state.blogUrl
+      })
+      this.setState(previousState => {
+        return {
+          blogs: previousState.blogs.concat(newBlog)
+        }
+      })
+    } catch (exception) {
+      console.log(exception)
+    }
+  }
+
+  handleFieldChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
 
@@ -64,7 +87,7 @@ class App extends React.Component {
               Username:
               <input type='text' name='username'
                      value={this.state.username}
-                     onChange={this.handleLoginFieldChange}/>
+                     onChange={this.handleFieldChange} />
             </label>
           </p>
           <p>
@@ -72,10 +95,36 @@ class App extends React.Component {
               Password:
               <input type='password' name='password'
                      value={this.state.password}
-                     onChange={this.handleLoginFieldChange}/>
+                     onChange={this.handleFieldChange} />
             </label>
           </p>
           <button type='submit'>Login</button>
+        </form>
+      </div>
+    )
+
+    const blogCreationForm = () => (
+      <div>
+        <form onSubmit={this.createBlog}>
+          <p><label>
+              Title:
+              <input type='text' name='blogTitle' required
+                     value={this.state.blogTitle}
+                     onChange={this.handleFieldChange} />
+          </label></p>
+          <p><label>
+              Author:
+              <input type='text' name='blogAuthor'
+                     value={this.state.blogAuthor}
+                     onChange={this.handleFieldChange} />
+          </label></p>
+          <p><label>
+              URL:
+              <input type='text' name='blogUrl' required
+                     value={this.state.blogUrl}
+                     onChange={this.handleFieldChange} />
+          </label></p>
+          <button type='submit'>Create</button>
         </form>
       </div>
     )
@@ -84,6 +133,7 @@ class App extends React.Component {
       <div>
         <p>Logged in as: {this.state.user.name}</p>
         <button onClick={this.logout}>logout</button>
+        {blogCreationForm()}
         {this.state.blogs.map(
           blog =>
             <Blog key={blog.id} blog={blog}/>
