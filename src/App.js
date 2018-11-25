@@ -19,7 +19,12 @@ class App extends React.Component {
   componentDidMount() {
     const blogs = blogService.getAll().then(blogs =>
       this.setState({ blogs })
-    )
+                                           )
+    const localStorageUser = window.localStorage.getItem('user')
+    if (localStorageUser !== null) {
+      const user = JSON.parse(localStorageUser)
+      this.setState({ user })
+    }
   }
 
   login = async (event) => {
@@ -30,12 +35,19 @@ class App extends React.Component {
         password: this.state.password
       })
       this.setState({ username: '', password: '', user, error: null })
+      window.localStorage.setItem('user', JSON.stringify(user))
     } catch (exception) {
       this.setState({ error: 'Invalid username or password.' })
       setTimeout(() => {
         this.setState({ error: null })
       }, 5000)
     }
+  }
+
+  logout = async (event) => {
+    event.preventDefault()
+    window.localStorage.clear()
+    this.setState({ user: null })
   }
 
   handleLoginFieldChange = (event) => {
@@ -48,14 +60,20 @@ class App extends React.Component {
         <p>Please login to use the service.</p>
         <form onSubmit={this.login}>
           <p>
-            <label for='username'>Username: </label>
-            <input id='username' type='text' name='username'
-                   value={this.state.username} onChange={this.handleLoginFieldChange}/>
+            <label>
+              Username:
+              <input type='text' name='username'
+                     value={this.state.username}
+                     onChange={this.handleLoginFieldChange}/>
+            </label>
           </p>
           <p>
-            <label for='password'>Password: </label>
-            <input id='password' type='password' name='password'
-                   value={this.state.password} onChange={this.handleLoginFieldChange}/>
+            <label>
+              Password:
+              <input type='password' name='password'
+                     value={this.state.password}
+                     onChange={this.handleLoginFieldChange}/>
+            </label>
           </p>
           <button type='submit'>Login</button>
         </form>
@@ -65,8 +83,10 @@ class App extends React.Component {
     const blogInterface = () => (
       <div>
         <p>Logged in as: {this.state.user.name}</p>
+        <button onClick={this.logout}>logout</button>
         {this.state.blogs.map(
-          blog => <Blog key={blog.id} blog={blog}/>
+          blog =>
+            <Blog key={blog.id} blog={blog}/>
         )}
       </div>
     )
