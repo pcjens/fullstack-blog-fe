@@ -1,8 +1,9 @@
 import React from 'react'
 
-const Notification = ({ message }) => (
+const Notification = ({ message, error }) => (
   <div>
-    { message !== null && <h4>{message}</h4> }
+    { message !== null &&
+      <h4 className={error ? 'error' : 'info'}>{message}</h4> }
   </div>
 )
 

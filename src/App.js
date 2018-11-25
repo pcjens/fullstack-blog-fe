@@ -13,6 +13,7 @@ class App extends React.Component {
       password: '',
       user: null,
       error: null,
+      info: null,
       blogTitle: '',
       blogAuthor: '',
       blogUrl: ''
@@ -58,13 +59,17 @@ class App extends React.Component {
   createBlog = async (event) => {
     event.preventDefault()
     try {
-      const newBlog = await blogService.post({
-        title: this.state.blogTitle,
-        author: this.state.blogAuthor,
-        url: this.state.blogUrl
-      })
+      const title = this.state.blogTitle
+      const author = this.state.blogAuthor
+      const url = this.state.blogUrl
+      const newBlog = await blogService.post({ title, author, url })
+
+      setTimeout(() => {
+        this.setState({ info: null })
+      }, 5000)
       this.setState(previousState => {
         return {
+          info: `Added a new blog: '${title}' by ${author}`,
           blogs: previousState.blogs.concat(newBlog)
         }
       })
@@ -144,7 +149,8 @@ class App extends React.Component {
     return (
       <div>
         <h2>Blogs</h2>
-        <Notification message={ this.state.error }/>
+        <Notification message={ this.state.error } error={true} />
+        <Notification message={ this.state.info } error={false} />
         {this.state.user === null && loginForm()}
         {this.state.user !== null && blogInterface()}
       </div>
