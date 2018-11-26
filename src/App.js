@@ -64,6 +64,10 @@ class App extends React.Component {
       const author = this.state.blogAuthor
       const url = this.state.blogUrl
       const newBlog = await blogService.post({ title, author, url })
+      newBlog.user = {
+        username: this.state.user.username,
+        name: this.state.user.name
+      }
 
       setTimeout(() => {
         this.setState({ info: null })
@@ -157,8 +161,8 @@ class App extends React.Component {
         {this.state.inBlogCreation ? blogCreationForm() : blogCreationOpener()}
         {this.state.blogs
           .sort((a, b) => b.likes - a.likes)
-          .map(blog => <Blog key={blog.id} blog={blog}
-                               like={this.like(blog)} remove={this.remove(blog)} />
+          .map(blog => <Blog key={blog.id} blog={blog} like={this.like(blog)}
+                               remove={this.remove(blog)} user={this.state.user} />
         )}
       </div>
     )
