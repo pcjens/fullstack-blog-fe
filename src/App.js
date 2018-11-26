@@ -87,7 +87,7 @@ class App extends React.Component {
     this.setState(previousState => {
       const blogs = previousState.blogs
             .map(blog => {
-              if (blog.id == id) blog.likes = likes
+              if (blog.id === id) blog.likes = likes
               return blog
             })
       return {
@@ -141,8 +141,9 @@ class App extends React.Component {
         <p>Logged in as: {this.state.user.name}</p>
         <button onClick={this.logout}>logout</button>
         {this.state.inBlogCreation ? blogCreationForm() : blogCreationOpener()}
-        {this.state.blogs.map(
-          blog => <Blog key={blog.id} blog={blog} like={this.like(blog)} />
+        {this.state.blogs
+          .sort((a, b) => b.likes - a.likes)
+          .map(blog => <Blog key={blog.id} blog={blog} like={this.like(blog)} />
         )}
       </div>
     )
