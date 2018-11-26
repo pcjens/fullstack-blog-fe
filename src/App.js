@@ -23,8 +23,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const blogs = blogService.getAll().then(blogs =>
-      this.setState({ blogs })
+    blogService.getAll().then(blogs => this.setState({ blogs })
                                            )
     const localStorageUser = window.localStorage.getItem('user')
     if (localStorageUser !== null) {
