@@ -1,4 +1,5 @@
 import React from 'react'
+import blogService from '../services/blogs'
 
 class Blog extends React.Component {
   constructor(props) {
@@ -15,10 +16,10 @@ class Blog extends React.Component {
   }
 
   render() {
-    const blog = this.props.blog
+    const { blog, like } = this.props
 
     const likeButton = () => (
-      <button>like</button>
+      <button onClick={like}>like</button>
     )
     const moreInformation = () => (
       <div className='moreInfo'>

@@ -80,6 +80,22 @@ class App extends React.Component {
     }
   }
 
+  like = (blog) => async () => {
+    const res = await blogService.put(blog.id, { likes: blog.likes + 1 })
+    const likes = res.likes
+    const id = blog.id
+    this.setState(previousState => {
+      const blogs = previousState.blogs
+            .map(blog => {
+              if (blog.id == id) blog.likes = likes
+              return blog
+            })
+      return {
+        blogs
+      }
+    })
+  }
+
   handleFieldChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
@@ -126,7 +142,7 @@ class App extends React.Component {
         <button onClick={this.logout}>logout</button>
         {this.state.inBlogCreation ? blogCreationForm() : blogCreationOpener()}
         {this.state.blogs.map(
-          blog => <Blog key={blog.id} blog={blog}/>
+          blog => <Blog key={blog.id} blog={blog} like={this.like(blog)} />
         )}
       </div>
     )
