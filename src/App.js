@@ -1,6 +1,7 @@
 import React from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -16,7 +17,8 @@ class App extends React.Component {
       info: null,
       blogTitle: '',
       blogAuthor: '',
-      blogUrl: ''
+      blogUrl: '',
+      inBlogCreation: false
     }
   }
 
@@ -70,7 +72,8 @@ class App extends React.Component {
       this.setState(previousState => {
         return {
           info: `Added a new blog: '${title}' by ${author}`,
-          blogs: previousState.blogs.concat(newBlog)
+          blogs: previousState.blogs.concat(newBlog),
+          inBlogCreation: false
         }
       })
     } catch (exception) {
@@ -83,28 +86,10 @@ class App extends React.Component {
   }
 
   render() {
-    const loginForm = () => (
+    const blogCreationOpener = () => (
       <div>
-        <p>Please login to use the service.</p>
-        <form onSubmit={this.login}>
-          <p>
-            <label>
-              Username:
-              <input type='text' name='username'
-                     value={this.state.username}
-                     onChange={this.handleFieldChange} />
-            </label>
-          </p>
-          <p>
-            <label>
-              Password:
-              <input type='password' name='password'
-                     value={this.state.password}
-                     onChange={this.handleFieldChange} />
-            </label>
-          </p>
-          <button type='submit'>Login</button>
-        </form>
+        <button onClick={() => {
+          this.setState({ inBlogCreation: true }) }}>Create Blog</button>
       </div>
     )
 
@@ -114,22 +99,24 @@ class App extends React.Component {
           <p><label>
               Title:
               <input type='text' name='blogTitle' required
-                     value={this.state.blogTitle}
+                     value={this.blogTitle}
                      onChange={this.handleFieldChange} />
           </label></p>
           <p><label>
               Author:
               <input type='text' name='blogAuthor'
-                     value={this.state.blogAuthor}
+                     value={this.blogAuthor}
                      onChange={this.handleFieldChange} />
           </label></p>
           <p><label>
               URL:
               <input type='text' name='blogUrl' required
-                     value={this.state.blogUrl}
+                     value={this.blogUrl}
                      onChange={this.handleFieldChange} />
           </label></p>
           <button type='submit'>Create</button>
+          <button type='button' onClick={() => {
+            this.setState({ inBlogCreation: false })}}>Close</button>
         </form>
       </div>
     )
@@ -138,10 +125,9 @@ class App extends React.Component {
       <div>
         <p>Logged in as: {this.state.user.name}</p>
         <button onClick={this.logout}>logout</button>
-        {blogCreationForm()}
+        {this.state.inBlogCreation ? blogCreationForm() : blogCreationOpener()}
         {this.state.blogs.map(
-          blog =>
-            <Blog key={blog.id} blog={blog}/>
+          blog => <Blog key={blog.id} blog={blog}/>
         )}
       </div>
     )
@@ -151,7 +137,11 @@ class App extends React.Component {
         <h2>Blogs</h2>
         <Notification message={ this.state.error } error={true} />
         <Notification message={ this.state.info } error={false} />
-        {this.state.user === null && loginForm()}
+        {this.state.user === null &&
+          <LoginForm login={this.login}
+                     username={this.state.username}
+                     password={this.state.password}
+                     handleFieldChange={this.handleFieldChange} />}
         {this.state.user !== null && blogInterface()}
       </div>
     )
