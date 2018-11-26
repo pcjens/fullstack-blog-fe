@@ -24,4 +24,12 @@ const put = async (id, data) => {
   return res.data
 }
 
-export default { setToken, getAll, post, put }
+const del = async (id) => {
+  const config = {
+    headers: { 'Authorization': token }
+  }
+  const res = await axios.delete(baseUrl + '/' + id, config)
+  return res.data
+}
+
+export default { setToken, getAll, post, put, del }

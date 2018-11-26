@@ -96,6 +96,20 @@ class App extends React.Component {
     })
   }
 
+  remove = (blog) => async () => {
+    if (window.confirm(`Delete '${blog.title}' by ${blog.author}?`)) {
+      const res = await blogService.del(blog.id)
+      const id = blog.id
+      this.setState(previousState => {
+        const blogs = previousState.blogs
+              .filter(blog => blog.id !== id)
+        return {
+          blogs
+        }
+      })
+    }
+  }
+
   handleFieldChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
@@ -143,7 +157,8 @@ class App extends React.Component {
         {this.state.inBlogCreation ? blogCreationForm() : blogCreationOpener()}
         {this.state.blogs
           .sort((a, b) => b.likes - a.likes)
-          .map(blog => <Blog key={blog.id} blog={blog} like={this.like(blog)} />
+          .map(blog => <Blog key={blog.id} blog={blog}
+                               like={this.like(blog)} remove={this.remove(blog)} />
         )}
       </div>
     )

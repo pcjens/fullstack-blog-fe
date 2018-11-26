@@ -15,16 +15,16 @@ class Blog extends React.Component {
   }
 
   render() {
-    const { blog, like } = this.props
+    const { blog, like, remove } = this.props
 
-    const likeButton = () => (
-      <button onClick={like}>like</button>
-    )
+    const emojiLike = (<span role='img' aria-label='star'>⭐</span>)
+    const emojiDelete = (<span role='img' aria-label='wastebasket'>🗑️</span>)
     const moreInformation = () => (
       <div className='moreInfo'>
         <p><a href={blog.url}>{blog.url}</a></p>
-        <p>{blog.likes} likes {likeButton()}</p>
+        <p>{blog.likes} likes <button onClick={like}>Like {emojiLike}</button></p>
         <p>added by {blog.user.name}</p>
+        <p><button onClick={remove}>Delete {emojiDelete}</button></p>
       </div>
     )
 
