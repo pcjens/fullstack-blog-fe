@@ -1,4 +1,14 @@
 import { configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 
+let savedItems = {}
+window.localStorage = {
+  setItem: (key, item) => {
+    savedItems[key] = item
+  },
+  getItem: (key) => savedItems[key],
+  clear: savedItems = {}
+}
+
+jest.mock('./services/blogs')
 configure({ adapter: new Adapter() })
