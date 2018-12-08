@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import SimpleBlog from './SimpleBlog'
 
-describe.only('<Blog />', () => {
+describe('<SimpleBlog />', () => {
   it('renders title', () => {
     const blog = {
       title: 'Wonderful Title That Should Be Rendered',

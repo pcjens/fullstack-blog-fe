@@ -33,7 +33,7 @@ class Blog extends React.Component {
     const moreInformation = () => (
       <div className='moreInfo'>
         <p><a href={blog.url}>{blog.url}</a></p>
-        <p>{blog.likes} likes <button onClick={like}>Like {emojiLike}</button></p>
+        <p><span className='likes'>{blog.likes}</span> likes <button onClick={like}>Like {emojiLike}</button></p>
         <p>added by {blog.user.name}</p>
         <p>{canRemove && removeButton()}</p>
       </div>
@@ -41,8 +41,8 @@ class Blog extends React.Component {
 
     return (
       <div className='blog'>
-        <div onClick={this.toggleExpansion}>
-          <em className='title'>{blog.title}</em> by {blog.author}
+        <div className='expander' onClick={this.toggleExpansion}>
+          <em className='title'>{blog.title}</em> by <span className='author'>{blog.author}</span>
         </div>
         {this.state.expanded && moreInformation()}
       </div>
