@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 class Blog extends React.Component {
   constructor(props) {
@@ -12,6 +13,13 @@ class Blog extends React.Component {
     this.setState(previousState => {
       return { expanded: !previousState.expanded }
     })
+  }
+
+  static propTypes = {
+    blog: PropTypes.object.isRequired,
+    like: PropTypes.func.isRequired,
+    remove: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired
   }
 
   render() {
@@ -34,7 +42,7 @@ class Blog extends React.Component {
     return (
       <div className='blog'>
         <div onClick={this.toggleExpansion}>
-          <em>{blog.title}</em> by {blog.author}
+          <em className='title'>{blog.title}</em> by {blog.author}
         </div>
         {this.state.expanded && moreInformation()}
       </div>

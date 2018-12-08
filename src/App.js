@@ -102,7 +102,7 @@ class App extends React.Component {
 
   remove = (blog) => async () => {
     if (window.confirm(`Delete '${blog.title}' by ${blog.author}?`)) {
-      const res = await blogService.del(blog.id)
+      await blogService.del(blog.id)
       const id = blog.id
       this.setState(previousState => {
         const blogs = previousState.blogs
