@@ -3,28 +3,24 @@ import { connect } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-import blogService from './services/blogs'
 import loginService from './services/login'
+import blogService from './services/blogs'
 import { clearNotification, notify, notifyError } from './reducers/notificationReducer'
+import { initBlogs, postBlog, likeBlog, deleteBlog } from './reducers/blogReducer'
 
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      blogs: [],
       username: '',
       password: '',
       user: null,
-      blogTitle: '',
-      blogAuthor: '',
-      blogUrl: '',
       inBlogCreation: false
     }
   }
 
   componentDidMount() {
-    blogService.getAll().then(blogs => this.setState({ blogs })
-                                           )
+    this.props.initBlogs()
     const localStorageUser = window.localStorage.getItem('user')
     if (localStorageUser !== null) {
       const user = JSON.parse(localStorageUser)
@@ -55,57 +51,26 @@ class App extends React.Component {
     this.setState({ user: null })
   }
 
-  createBlog = async (event) => {
+  createBlog = (event) => {
     event.preventDefault()
-    try {
-      const title = this.state.blogTitle
-      const author = this.state.blogAuthor
-      const url = this.state.blogUrl
-      const newBlog = await blogService.post({ title, author, url })
-      newBlog.user = {
-        username: this.state.user.username,
-        name: this.state.user.name
-      }
-
-      this.props.notify(`Added a new blog: '${title}' by ${author}`, 5)
-      this.setState(previousState => {
-        return {
-          blogs: previousState.blogs.concat(newBlog),
-          inBlogCreation: false
-        }
-      })
-    } catch (exception) {
-      console.log(exception)
-    }
+    const title = event.target.title.value
+    const author = event.target.author.value
+    const url = event.target.url.value
+    this.props.postBlog(title, author, url, this.state.user)
+    this.props.notify(`Added a new blog: '${title}' by ${author}`, 5)
+    this.setState({ inBlogCreation: false })
+    event.target.title.value = ''
+    event.target.author.value = ''
+    event.target.url.value = ''
   }
 
   like = (blog) => async () => {
-    const res = await blogService.put(blog.id, { likes: blog.likes + 1 })
-    const likes = res.likes
-    const id = blog.id
-    this.setState(previousState => {
-      const blogs = previousState.blogs
-            .map(blog => {
-              if (blog.id === id) blog.likes = likes
-              return blog
-            })
-      return {
-        blogs
-      }
-    })
+    this.props.likeBlog(blog)
   }
 
   remove = (blog) => async () => {
     if (window.confirm(`Delete '${blog.title}' by ${blog.author}?`)) {
-      await blogService.del(blog.id)
-      const id = blog.id
-      this.setState(previousState => {
-        const blogs = previousState.blogs
-              .filter(blog => blog.id !== id)
-        return {
-          blogs
-        }
-      })
+      this.props.deleteBlog(blog.id)
     }
   }
 
@@ -125,22 +90,13 @@ class App extends React.Component {
       <div>
         <form onSubmit={this.createBlog}>
           <p><label>
-              Title:
-              <input type='text' name='blogTitle' required
-                     value={this.blogTitle}
-                     onChange={this.handleFieldChange} />
+              Title: <input type='text' name='title' required />
           </label></p>
           <p><label>
-              Author:
-              <input type='text' name='blogAuthor'
-                     value={this.blogAuthor}
-                     onChange={this.handleFieldChange} />
+              Author: <input type='text' name='author' />
           </label></p>
           <p><label>
-              URL:
-              <input type='text' name='blogUrl' required
-                     value={this.blogUrl}
-                     onChange={this.handleFieldChange} />
+              URL: <input type='text' name='url' required />
           </label></p>
           <button type='submit'>Create</button>
           <button type='button' onClick={() => {
@@ -154,7 +110,7 @@ class App extends React.Component {
         <p>Logged in as: {this.state.user.name}</p>
         <button onClick={this.logout}>logout</button>
         {this.state.inBlogCreation ? blogCreationForm() : blogCreationOpener()}
-        {this.state.blogs
+        {this.props.blogs
           .sort((a, b) => b.likes - a.likes)
           .map(blog => <Blog key={blog.id} blog={blog} like={this.like(blog)}
                                remove={this.remove(blog)} user={this.state.user} />
@@ -177,8 +133,13 @@ class App extends React.Component {
   }
 }
 
-const ConnectedApp = connect((store) => {}, {
-  clearNotification, notify, notifyError
+const ConnectedApp = connect((store) => {
+  return {
+    blogs: store.blogs
+  }
+}, {
+  clearNotification, notify, notifyError,
+  initBlogs, postBlog, likeBlog, deleteBlog
 })(App)
 
 export default ConnectedApp;
