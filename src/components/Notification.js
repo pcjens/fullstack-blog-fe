@@ -1,15 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
-const Notification = ({ message, error }) => (
+const Notification = ({ notification }) => (
   <div>
-    { message !== null &&
-      <h4 className={error ? 'error' : 'info'}>{message}</h4> }
+    { notification.message.length > 0 &&
+      <h4 className={notification.error ? 'error' : 'info'}>{notification.message}</h4> }
   </div>
 )
 
 Notification.propTypes = {
-  error: PropTypes.bool.isRequired
+  notification: PropTypes.object.isRequired
 }
 
-export default Notification
+const ConnectedNotification = connect((store) => {
+  return {
+    notification: store.notification
+  }
+})(Notification)
+
+export default ConnectedNotification

@@ -1,9 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { clearNotification, notify, notifyError } from './reducers/notificationReducer'
 
 class App extends React.Component {
   constructor(props) {
@@ -13,8 +15,6 @@ class App extends React.Component {
       username: '',
       password: '',
       user: null,
-      error: null,
-      info: null,
       blogTitle: '',
       blogAuthor: '',
       blogUrl: '',
@@ -41,13 +41,11 @@ class App extends React.Component {
         password: this.state.password
       })
       blogService.setToken(user.token)
-      this.setState({ username: '', password: '', user, error: null })
+      this.setState({ username: '', password: '', user })
+      this.props.clearNotification()
       window.localStorage.setItem('user', JSON.stringify(user))
     } catch (exception) {
-      this.setState({ error: 'Invalid username or password.' })
-      setTimeout(() => {
-        this.setState({ error: null })
-      }, 5000)
+      this.props.notifyError('Invalid username or password.', 5)
     }
   }
 
@@ -69,12 +67,9 @@ class App extends React.Component {
         name: this.state.user.name
       }
 
-      setTimeout(() => {
-        this.setState({ info: null })
-      }, 5000)
+      this.props.notify(`Added a new blog: '${title}' by ${author}`, 5)
       this.setState(previousState => {
         return {
-          info: `Added a new blog: '${title}' by ${author}`,
           blogs: previousState.blogs.concat(newBlog),
           inBlogCreation: false
         }
@@ -170,8 +165,7 @@ class App extends React.Component {
     return (
       <div>
         <h2>Blogs</h2>
-        <Notification message={ this.state.error } error={true} />
-        <Notification message={ this.state.info } error={false} />
+        <Notification />
         {this.state.user === null &&
           <LoginForm login={this.login}
                      username={this.state.username}
@@ -183,4 +177,8 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const ConnectedApp = connect((store) => {}, {
+  clearNotification, notify, notifyError
+})(App)
+
+export default ConnectedApp;
