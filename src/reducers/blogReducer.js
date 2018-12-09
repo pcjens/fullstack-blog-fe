@@ -27,13 +27,20 @@ export const initBlogs = () => {
 
 export const postBlog = (title, author, url, user) => {
   return async (dispatch) => {
-    const blog = await blogService.post({ title, author, url })
-    /* TODO: check if this is actually needed
-    blog.user = {
-      username: user.username,
-      name: user.name
-    }*/
-    dispatch({ type: 'NEW_BLOG', blog })
+    setTimeout(() => {
+      dispatch({ type: 'CLEAR_NOTIFICATION' })
+    }, 5000)
+    try {
+      const blog = await blogService.post({ title, author, url })
+      blog.user = {
+        username: user.username,
+        name: user.name
+      }
+      dispatch({ type: 'NOTIFY', message: `Added a new blog: '${title}' by ${author}` })
+      dispatch({ type: 'NEW_BLOG', blog })
+    } catch (exception) {
+      dispatch({ type: 'NOTIFY_ERROR', message: `Not logged in!` })
+    }
   }
 }
 

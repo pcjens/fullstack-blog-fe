@@ -6,6 +6,10 @@ const setToken = (newToken) => {
   token = `bearer ${newToken}`
 }
 
+const clearToken = () => {
+  token = ''
+}
+
 const getAll = async () => {
   const res = await axios.get(baseUrl)
   return res.data
@@ -32,4 +36,4 @@ const del = async (id) => {
   return res.data
 }
 
-export default { setToken, getAll, post, put, del }
+export default { setToken, clearToken, getAll, post, put, del }

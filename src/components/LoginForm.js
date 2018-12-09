@@ -1,34 +1,35 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { login } from '../reducers/userReducer'
 
-const LoginForm = ({ login, username, password, handleFieldChange }) => (
-  <div>
-    <p>Please login to use the service.</p>
-    <form onSubmit={login}>
-      <p>
-        <label>
-          Username:
-          <input type='text' name='username' value={username}
-                 onChange={handleFieldChange} />
-        </label>
-      </p>
-      <p>
-        <label>
-          Password:
-          <input type='password' name='password' value={password}
-                 onChange={handleFieldChange} />
-        </label>
-      </p>
-      <button type='submit'>Login</button>
-    </form>
-  </div>
-)
+class LoginForm extends React.Component {
+  login = (event) => {
+    event.preventDefault()
+    this.props.login(event.target.username.value, event.target.password.value)
+    event.target.username.value = ''
+    event.target.password.value = ''
+  }
 
-LoginForm.propTypes = {
-  login: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
-  handleFieldChange: PropTypes.func.isRequired
+  render() {
+    return (
+      <div>
+        <p>Please login to use the service.</p>
+        <form onSubmit={this.login}>
+          <p>
+            <label>
+              Username: <input type='text' name='username' />
+            </label>
+          </p>
+          <p>
+            <label>
+              Password: <input type='password' name='password' />
+            </label>
+          </p>
+          <button type='submit'>Login</button>
+        </form>
+      </div>
+    )
+  }
 }
 
-export default LoginForm
+export default connect(null, { login })(LoginForm)
