@@ -1,12 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Message } from 'semantic-ui-react'
 
 const Notification = ({ notification }) => (
-  <div>
+  <p>
     { notification.message.length > 0 &&
-      <h4 className={notification.error ? 'error' : 'info'}>{notification.message}</h4> }
-  </div>
+      <Message success={!notification.error} error={notification.error}>
+          {notification.message}
+        </Message>
+      }
+  </p>
 )
 
 Notification.propTypes = {

@@ -1,14 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { Table } from 'semantic-ui-react'
 import { likeBlog, deleteBlog } from '../reducers/blogReducer'
 
 const Blog = ({ blog }) => (
-  <div className='blog'>
-    <Link to={'/blogs/' + blog.id}>
-      <em className='title'>{blog.title}</em> by <span className='author'>{blog.author}</span>
-    </Link>
-  </div>
+  <Table.Row>
+    <Table.Cell>
+      <Link to={'/blogs/' + blog.id}>
+        <em>{blog.title}</em>
+      </Link>
+    </Table.Cell>
+    <Table.Cell>
+      {blog.author}
+    </Table.Cell>
+  </Table.Row>
 )
 
 const BlogList = ({ blogs, user, likeBlog, deleteBlog, filterUserId }) => {
@@ -19,9 +25,9 @@ const BlogList = ({ blogs, user, likeBlog, deleteBlog, filterUserId }) => {
   const filter = blog => filterUserId === undefined || filterUserId === blog.user._id
 
   return (
-    <div>
+    <Table striped celled>
       { blogs.filter(filter).sort(sort).map(renderBlog) }
-    </div>
+    </Table>
   )
 }
 

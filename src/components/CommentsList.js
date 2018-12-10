@@ -1,11 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Feed, Icon } from 'semantic-ui-react'
 
 const CommentsList = ({ blogs, id }) => {
   const blog = blogs.find(blog => blog.id === id)
   if (blog === undefined) return (<div></div>)
   const comments = blog.comments
-  if (comments.length === 0) return <p>No comments yet.</p>
+  if (comments.length === 0) return <p><br/>No comments yet. You could make the first one!</p>
 
   let commentIndex = 0
   const enumerateComment = comment => {
@@ -13,13 +14,20 @@ const CommentsList = ({ blogs, id }) => {
     return { comment, i: commentIndex }
   }
   const renderComment = comment => (
-    <li key={comment.i}>{comment.comment}</li>
+    <Feed.Event key={comment.i}>
+      <Feed.Label>
+        <Icon name='user' size='large' />
+      </Feed.Label>
+      <Feed.Content>
+        {comment.comment}
+      </Feed.Content>
+    </Feed.Event>
   )
 
   return (
-    <ul>
+    <Feed>
       { comments.reverse().map(enumerateComment).map(renderComment) }
-    </ul>
+    </Feed>
   )
 }
 

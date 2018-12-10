@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { Container, Menu, Header } from 'semantic-ui-react'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import BlogCreation from './components/BlogCreation'
@@ -13,19 +14,27 @@ import { loginFromLocalStorage, logout } from './reducers/userReducer'
 import { initUsers } from './reducers/userbaseReducer'
 
 const Nav = ({ name, logout }) => (
-  <div>
-    <p>
-      <Link to='/'>Blogs </Link>|
-      <Link to='/users'> Users </Link>|
-      Logged in as: {name} <button onClick={logout}>logout</button>
-    </p>
-  </div>
+  <Menu pointing>
+    <Menu.Item link><Link to='/'>Blogs</Link></Menu.Item>
+    <Menu.Item link><Link to='/users'>Users</Link></Menu.Item>
+    <Menu.Item link position='right'><Link to='/' onClick={logout}>Logout</Link></Menu.Item>
+  </Menu>
 )
 
 const BlogOverview = () => (
   <div>
     <BlogCreation />
     <BlogList />
+  </div>
+)
+
+const Footer = () => (
+  <div>
+    <br/>
+    <p style={{ textAlign: 'center' }}>
+      The source for this blog can be found on <a href='https://github.com/pcjens/fullstack-blog-fe'>GitHub</a>.
+    </p>
+    <br/>
   </div>
 )
 
@@ -53,16 +62,18 @@ class App extends React.Component {
     )
 
     return (
-      <div>
+      <Container>
         <Router>
           <div>
-            <h2>Blogs</h2>
+            <br/>
+            <Header as='h1'>Blogs</Header>
             { loggedIn && <Nav name={this.props.user.name} logout={this.logout} /> }
             <Notification />
             { !loggedIn ? <LoginForm login={this.login} /> : routes() }
+            <Footer />
           </div>
         </Router>
-      </div>
+      </Container>
     )
   }
 }

@@ -5,15 +5,17 @@ import { Link } from 'react-router-dom'
 class Users extends React.Component {
   render() {
     const renderUser = user => (
-      <tr><td><Link to={'/users/' + user.id}>{user.name}</Link></td><td>{user.blogs.length}</td></tr>
+      <tr key={user.id}>
+        <td><Link to={'/users/' + user.id}>{user.name}</Link></td><td>{user.blogs.length}</td>
+      </tr>
     )
 
     return (
       <div>
-        <h3>Users</h3>
+        <h2>Users</h2>
         <table>
           <thead>
-            <tr><td></td><td>Blogs added</td></tr>
+            <tr><td>User</td><td>Blogs added</td></tr>
           </thead>
           <tbody>
             { this.props.userbase.map(renderUser) }

@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Button, Form } from 'semantic-ui-react'
 import { postBlog } from '../reducers/blogReducer'
 
 class BlogCreation extends React.Component {
@@ -22,27 +23,26 @@ class BlogCreation extends React.Component {
   render() {
     const blogCreationOpener = () => (
       <div>
-        <button onClick={() => {
-          this.setState({ visible: true }) }}>Create Blog</button>
+        <Button onClick={() => { this.setState({ visible: true }) }}>Create Blog</Button>
       </div>
     )
 
     const blogCreationForm = () => (
       <div>
-        <form onSubmit={this.createBlog}>
-          <p><label>
+        <Form onSubmit={this.createBlog}>
+          <Form.Field><label>
               Title: <input type='text' name='title' required />
-          </label></p>
-          <p><label>
+          </label></Form.Field>
+          <Form.Field><label>
               Author: <input type='text' name='author' />
-          </label></p>
-          <p><label>
+          </label></Form.Field>
+          <Form.Field><label>
               URL: <input type='text' name='url' required />
-          </label></p>
-          <button type='submit'>Create</button>
-          <button type='button' onClick={() => {
-            this.setState({ visible: false })}}>Close</button>
-        </form>
+          </label></Form.Field>
+          <Button type='submit'>Create</Button>
+          <Button type='button' onClick={() => {
+            this.setState({ visible: false })}}>Close</Button>
+        </Form>
       </div>
     )
 
