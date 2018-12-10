@@ -1,10 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 class Users extends React.Component {
   render() {
     const renderUser = user => (
-      <tr><td>{user.name}</td><td>{user.blogs.length}</td></tr>
+      <tr><td><Link to={'/users/' + user.id}>{user.name}</Link></td><td>{user.blogs.length}</td></tr>
     )
 
     return (
