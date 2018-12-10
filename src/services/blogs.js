@@ -36,4 +36,9 @@ const del = async (id) => {
   return res.data
 }
 
-export default { setToken, clearToken, getAll, post, put, del }
+const postComment = async (id, comment) => {
+  const res = await axios.post(baseUrl + '/' + id + '/comments', { comment })
+  return res.data
+}
+
+export default { setToken, clearToken, getAll, post, put, del, postComment }

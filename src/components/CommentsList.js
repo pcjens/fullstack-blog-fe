@@ -5,15 +5,20 @@ const CommentsList = ({ blogs, id }) => {
   const blog = blogs.find(blog => blog.id === id)
   if (blog === undefined) return (<div></div>)
   const comments = blog.comments
-  if (comments.length === 0) return "No comments yet."
+  if (comments.length === 0) return <p>No comments yet.</p>
 
+  let commentIndex = 0
+  const enumerateComment = comment => {
+    commentIndex += 1
+    return { comment, i: commentIndex }
+  }
   const renderComment = comment => (
-    <li>{comment}</li>
+    <li key={comment.i}>{comment.comment}</li>
   )
 
   return (
     <ul>
-      { comments.map(renderComment) }
+      { comments.reverse().map(enumerateComment).map(renderComment) }
     </ul>
   )
 }

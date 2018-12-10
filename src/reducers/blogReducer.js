@@ -10,6 +10,8 @@ const reducer = (store = [], action) => {
     return store.map(blog => blog.id === action.id ? { ...blog, likes: action.likes } : blog)
   case 'DELETE_BLOG':
     return store.filter(blog => blog.id !== action.id)
+  case 'UPDATE_BLOG_COMMENTS':
+    return store.map(blog => blog.id === action.id ? { ...blog, comments: action.comments } : blog)
   default:
     return store
   }
@@ -57,6 +59,15 @@ export const deleteBlog = (blog) => {
   return async (dispatch) => {
     await blogService.del(blog.id)
     dispatch({ type: 'DELETE_BLOG', id: blog.id })
+  }
+}
+
+export const commentOnBlog = (id, comment) => {
+  return async (dispatch) => {
+    console.log("Sending comment: '" + comment + "' to '" + id + "'")
+    const comments = await blogService.postComment(id, comment)
+    console.log("Got new comments:", comments)
+    dispatch({ type: 'UPDATE_BLOG_COMMENTS', id, comments })
   }
 }
 
