@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import CommentsList from './CommentsList'
 
 class Blog extends React.Component {
   render() {
@@ -15,6 +16,7 @@ class Blog extends React.Component {
       const remove = () => window.confirm(`Delete '${blog.title}' by ${blog.author}?`) && deleteBlog(blog)
       const removeButton = () => (<button onClick={remove}>Delete</button>)
       const like = () => likeBlog(blog)
+      const comment = (event) => console.log('Commented: ', event.target.comment.value)
 
       return (
         <div>
@@ -23,6 +25,12 @@ class Blog extends React.Component {
           <p><span className='likes'>{blog.likes}</span> likes <button onClick={like}>Like</button></p>
           <p>added by <Link to={'/users/' + blog.user._id}>{blog.user.name}</Link></p>
           <p>{canRemove && removeButton()}</p>
+          <h3>Comments</h3>
+          <p><CommentsList id={blog.id} /></p>
+          <form onSubmit={comment}>
+            <input type='text' name='comment' placeholder='Great post!' />
+            <button type='submit'>Comment</button>
+          </form>
         </div>
       )
     }
