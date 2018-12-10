@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Table } from 'semantic-ui-react'
-import { likeBlog, deleteBlog } from '../reducers/blogReducer'
 
 const Blog = ({ blog }) => (
   <Table.Row>
@@ -17,7 +16,7 @@ const Blog = ({ blog }) => (
   </Table.Row>
 )
 
-const BlogList = ({ blogs, user, likeBlog, deleteBlog, filterUserId }) => {
+const BlogList = ({ blogs, filterUserId }) => {
   const renderBlog = blog => (
     <Blog key={blog.id} blog={blog} />
   )
@@ -33,10 +32,8 @@ const BlogList = ({ blogs, user, likeBlog, deleteBlog, filterUserId }) => {
 
 const ConnectedBlogList = connect((store) => {
   return {
-    user: store.user, blogs: store.blogs
+    blogs: store.blogs
   }
-}, {
-  likeBlog, deleteBlog
 })(BlogList)
 
 export default ConnectedBlogList

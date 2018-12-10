@@ -28,9 +28,6 @@ class Blog extends React.Component {
       }
       const comment = (event) => {
         event.preventDefault()
-        console.log("Func:", commentOnBlog)
-        console.log("Id:", blog.id)
-        console.log("Value:", event.target.comment.value)
         commentOnBlog(blog.id, event.target.comment.value)
         event.target.comment.value = ''
       }
@@ -64,8 +61,7 @@ class Blog extends React.Component {
           </Card>
           <Header as='h3'>Comments</Header>
           <Form onSubmit={comment}>
-            <Input type='text' name='comment' placeholder='Great post!'
-                   label={<Button type='submit'>Comment</Button>} labelPosition='right' />
+            <Input type='text' name='comment' placeholder='Great post!' label={<Button type='submit'>Comment</Button>} labelPosition='right' />
           </Form>
           <CommentsList id={blog.id} />
         </div>

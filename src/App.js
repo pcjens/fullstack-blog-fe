@@ -13,7 +13,7 @@ import { initBlogs } from './reducers/blogReducer'
 import { loginFromLocalStorage, logout } from './reducers/userReducer'
 import { initUsers } from './reducers/userbaseReducer'
 
-const Nav = ({ name, logout }) => (
+const Nav = ({ logout }) => (
   <Menu pointing>
     <Menu.Item link><Link to='/'>Blogs</Link></Menu.Item>
     <Menu.Item link><Link to='/users'>Users</Link></Menu.Item>
@@ -67,7 +67,7 @@ class App extends React.Component {
           <div>
             <br/>
             <Header as='h1'>Blogs</Header>
-            { loggedIn && <Nav name={this.props.user.name} logout={this.logout} /> }
+            { loggedIn && <Nav logout={this.logout} /> }
             <Notification />
             { !loggedIn ? <LoginForm login={this.login} /> : routes() }
             <Footer />
@@ -86,4 +86,4 @@ const ConnectedApp = connect((store) => {
   initBlogs, initUsers, loginFromLocalStorage, logout
 })(App)
 
-export default ConnectedApp;
+export default ConnectedApp

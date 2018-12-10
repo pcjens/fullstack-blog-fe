@@ -41,7 +41,7 @@ export const postBlog = (title, author, url, user) => {
       dispatch({ type: 'NOTIFY', message: `Added a new blog: '${title}' by ${author}` })
       dispatch({ type: 'NEW_BLOG', blog })
     } catch (exception) {
-      dispatch({ type: 'NOTIFY_ERROR', message: `Not logged in!` })
+      dispatch({ type: 'NOTIFY_ERROR', message: 'Not logged in!' })
     }
   }
 }
@@ -64,9 +64,7 @@ export const deleteBlog = (blog) => {
 
 export const commentOnBlog = (id, comment) => {
   return async (dispatch) => {
-    console.log("Sending comment: '" + comment + "' to '" + id + "'")
     const comments = await blogService.postComment(id, comment)
-    console.log("Got new comments:", comments)
     dispatch({ type: 'UPDATE_BLOG_COMMENTS', id, comments })
   }
 }

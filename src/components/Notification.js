@@ -3,15 +3,15 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Message } from 'semantic-ui-react'
 
-const Notification = ({ notification }) => (
-  <p>
-    { notification.message.length > 0 &&
-      <Message success={!notification.error} error={notification.error}>
-          {notification.message}
-        </Message>
-      }
-  </p>
-)
+const Notification = ({ notification }) => {
+  const { message, error } = notification
+  const messageExists = message.length > 0
+  return (
+    <p>
+      { messageExists && <Message success={!error} error={error}>{message}</Message> }
+    </p>
+  )
+}
 
 Notification.propTypes = {
   notification: PropTypes.object.isRequired
