@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import BlogCreation from './components/BlogCreation'
@@ -14,7 +14,11 @@ import { initUsers } from './reducers/userbaseReducer'
 
 const Nav = ({ name, logout }) => (
   <div>
-    <p>Logged in as: {name} <button onClick={logout}>logout</button></p>
+    <p>
+      <Link to='/'>Blogs </Link>|
+      <Link to='/users'> Users </Link>|
+      Logged in as: {name} <button onClick={logout}>logout</button>
+    </p>
   </div>
 )
 
