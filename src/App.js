@@ -7,6 +7,7 @@ import BlogCreation from './components/BlogCreation'
 import User from './components/User'
 import Users from './components/Users'
 import BlogList from './components/BlogList'
+import Blog from './components/Blog'
 import { initBlogs } from './reducers/blogReducer'
 import { loginFromLocalStorage, logout } from './reducers/userReducer'
 import { initUsers } from './reducers/userbaseReducer'
@@ -43,6 +44,7 @@ class App extends React.Component {
         <Route exact path='/' render={() => <BlogOverview />}></Route>
         <Route exact path='/users' render={() => <Users />}></Route>
         <Route exact path='/users/:id' render={({ match }) => <User id={match.params.id} />}></Route>
+        <Route exact path='/blogs/:id' render={({ match }) => <Blog id={match.params.id} />}></Route>
       </div>
     )
 

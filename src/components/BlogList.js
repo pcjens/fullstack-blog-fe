@@ -1,12 +1,19 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Blog from './Blog'
+import { Link } from 'react-router-dom'
 import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+
+const Blog = ({ blog }) => (
+  <div className='blog'>
+    <Link to={'/blogs/' + blog.id}>
+      <em className='title'>{blog.title}</em> by <span className='author'>{blog.author}</span>
+    </Link>
+  </div>
+)
 
 const BlogList = ({ blogs, user, likeBlog, deleteBlog, filterUserId }) => {
   const renderBlog = blog => (
-    <Blog key={blog.id} user={user} blog={blog} like={() => likeBlog(blog)}
-      remove={() => window.confirm(`Delete '${blog.title}' by ${blog.author}?`) && deleteBlog(blog)} />
+    <Blog key={blog.id} blog={blog} />
   )
   const sort = (a, b) => b.likes - a.likes
   const filter = blog => filterUserId === undefined || filterUserId === blog.user._id

@@ -1,53 +1,39 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { likeBlog, deleteBlog } from '../reducers/blogReducer'
 
 class Blog extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      expanded: false
-    }
-  }
-
-  toggleExpansion = () => {
-    this.setState(previousState => {
-      return { expanded: !previousState.expanded }
-    })
-  }
-
-  static propTypes = {
-    blog: PropTypes.object.isRequired,
-    like: PropTypes.func.isRequired,
-    remove: PropTypes.func.isRequired,
-    user: PropTypes.object.isRequired
-  }
-
   render() {
-    const { blog, like, remove, user } = this.props
+    const { user, blogs, id, deleteBlog, likeBlog } = this.props
+    const blog = blogs.find(blog => blog.id === id)
+    if (blog === undefined) {
+      return (<div>Blog not found.</div>)
+    } else {
+      const canRemove = blog.user.username === undefined ||
+            blog.user.username === user.username
+      const remove = () => window.confirm(`Delete '${blog.title}' by ${blog.author}?`) && deleteBlog(blog)
+      const removeButton = () => (<button onClick={remove}>Delete</button>)
+      const like = () => likeBlog(blog)
 
-    const emojiLike = (<span role='img' aria-label='star'>⭐</span>)
-    const emojiDelete = (<span role='img' aria-label='wastebasket'>🗑️</span>)
-    const canRemove = blog.user.username === undefined ||
-          blog.user.username === user.username
-    const removeButton = () => (<button onClick={remove}>Delete {emojiDelete}</button>)
-    const moreInformation = () => (
-      <div className='moreInfo'>
-        <p><a href={blog.url}>{blog.url}</a></p>
-        <p><span className='likes'>{blog.likes}</span> likes <button onClick={like}>Like {emojiLike}</button></p>
-        <p>added by {blog.user.name}</p>
-        <p>{canRemove && removeButton()}</p>
-      </div>
-    )
-
-    return (
-      <div className='blog'>
-        <div className='expander' onClick={this.toggleExpansion}>
-          <em className='title'>{blog.title}</em> by <span className='author'>{blog.author}</span>
+      return (
+        <div>
+          <h3><em className='title'>{blog.title}</em> by <span className='author'>{blog.author}</span></h3>
+          <p><a href={blog.url}>{blog.url}</a></p>
+          <p><span className='likes'>{blog.likes}</span> likes <button onClick={like}>Like</button></p>
+          <p>added by <Link to={'/users/' + blog.user._id}>{blog.user.name}</Link></p>
+          <p>{canRemove && removeButton()}</p>
         </div>
-        {this.state.expanded && moreInformation()}
-      </div>
-    )
+      )
+    }
   }
 }
 
-export default Blog
+const ConnectedBlog = connect(store => ({
+  user: store.user,
+  blogs: store.blogs
+}), {
+  likeBlog, deleteBlog
+})(Blog)
+
+export default ConnectedBlog
